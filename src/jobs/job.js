@@ -1,8 +1,9 @@
 const { Worker } = require('worker_threads');
+const path = require('path');
 
 async function startBot(botData) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker('../gateway-bot/src/workers/worker.js', {
+    const worker = new Worker(path.join(__dirname, '../workers/worker.js'), {
       workerData: botData,
     });
 

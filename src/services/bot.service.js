@@ -57,7 +57,7 @@ const updateBotById = async (botId, updateBody) => {
   if (!bot) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Bot not found');
   }
-  if (updateBody.email && (await Bot.isEmailTaken(updateBody.privateKey, botId))) {
+  if (updateBody.privateKey && (await Bot.isPrivateKeyTaken(updateBody.privateKey, botId))) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Private key already taken');
   }
   Object.assign(bot, updateBody);
