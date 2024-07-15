@@ -44,6 +44,10 @@ const botSchema = mongoose.Schema(
       default: botStatusTypes.DEACTIVATED,
       required: true,
     },
+    processPid: {
+      type: Number,
+      required: false,
+    },
   },
   {
     timestamps: true,

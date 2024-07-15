@@ -20,7 +20,7 @@ const queryLogs = async (filter, options) => {
  * @returns {Promise<Bot>}
  */
 const getLogsByBotId = async (botId) => {
-  return Log.find({ bot: botId }).sort({ createdAt: -1 }).limit(100);
+  return Log.find({ bot: botId }).sort({ createdAt: 1 }).limit(100);
 };
 
 module.exports = {

@@ -1,11 +1,16 @@
-const { Worker } = require('worker_threads');
 const path = require('path');
+const { fork } = require('child_process');
+const { botService } = require('../services');
+const { botStatusTypes } = require('../config/bots');
 
 async function startBot(botData) {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(path.join(__dirname, '../workers/worker.js'), {
-      workerData: botData,
-    });
+    const worker = fork(path.join(__dirname, '../workers/worker.js'));
+    const processPid = worker.pid;
+
+    botService.updateBotById(botData._id, { processPid, status: botStatusTypes.ACTIVE });
+
+    worker.send(botData);
 
     worker.on('message', (result) => {
       resolve(result);
@@ -23,8 +28,15 @@ async function startBot(botData) {
   });
 }
 
-async function killBot() {
-  Worker.all();
+async function killBot(botData) {
+  const { processPid } = botData;
+
+  try {
+    process.kill(processPid, 'SIGTERM');
+    botService.updateBotById(botData._id, { processPid: null, status: botStatusTypes.DEACTIVATED });
+  } catch (err) {
+    throw new Error(err);
+  }
 }
 
 module.exports = {

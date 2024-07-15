@@ -42,7 +42,8 @@ const deleteBot = catchAsync(async (req, res) => {
 });
 
 const expireBot = catchAsync(async (req, res) => {
-  killBot(2);
+  const bot = await botService.getBotById(req.params.botId);
+  killBot(bot);
   res.send({ data: 'ok' });
 });
 
