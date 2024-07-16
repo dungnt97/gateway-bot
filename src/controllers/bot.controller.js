@@ -31,9 +31,13 @@ const updateBot = catchAsync(async (req, res) => {
 });
 
 const runBot = catchAsync(async (req, res) => {
-  const bot = await botService.getBotById(req.params.botId);
-  startBot(bot);
-  res.send({ data: 'ok' });
+  try {
+    const bot = await botService.getBotById(req.params.botId);
+    const result = await startBot(bot);
+    res.send({ data: result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const deleteBot = catchAsync(async (req, res) => {
@@ -42,9 +46,13 @@ const deleteBot = catchAsync(async (req, res) => {
 });
 
 const expireBot = catchAsync(async (req, res) => {
-  const bot = await botService.getBotById(req.params.botId);
-  killBot(bot);
-  res.send({ data: 'ok' });
+  try {
+    const bot = await botService.getBotById(req.params.botId);
+    await killBot(bot);
+    res.send({ data: 'ok' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = {
